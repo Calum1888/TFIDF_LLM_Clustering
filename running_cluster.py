@@ -44,5 +44,5 @@ results = clusterer.fit(cuad_data)
 labels = clusterer.llm_cluster_label()
 print(labels)
 
-labels = clusterer.llm_cluster_label()
-clusterer.error_detection(cluster_id=3, generated_labels=labels)
+# error detection
+print(clusterer.error_detection(cluster_id=3, generated_labels=labels))
