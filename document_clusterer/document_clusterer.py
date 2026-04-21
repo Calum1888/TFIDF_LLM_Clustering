@@ -18,7 +18,9 @@ class DocumentClusterer():
                 input_type: str,
                 random_state: int,
                 llm_model: str,
-                n_llm_samples: int):
+                n_llm_samples: int,
+                prompt_type_of_doc: str,
+                ):
         
         self.ngram_range = ngram
         self.n_components = n_components
@@ -29,6 +31,7 @@ class DocumentClusterer():
         self.random_state = random_state
         self.llm_model = llm_model
         self.n_llm_samples = n_llm_samples
+        self.prompt_type_of_doc = prompt_type_of_doc
 
         self.tfidf_ = None
         self.svd_ = None
@@ -150,14 +153,13 @@ class DocumentClusterer():
         Uses a locally running Ollama LLM to generate a human-readable label
         for each cluster.
 
-        Groups document identifiers by their cluster label, then samples up to
-        10 document titles per cluster and passes them to the configured Ollama
+        Groups document identifiers by their cluster label, then samples a user defined number of documents
+        per cluster and passes them to the configured Ollama
         model to produce a short descriptive label. Requires fit() to have been
         called first so that self.labels_ and self.doc_ids_ are populated.
 
         Returns:
             dict: A mapping of cluster_id (int) -> label (str), e.g.
-            {0: "Content Licensing Agreements", 6: "Distributor Agreements"}
 
         Raises:
             ValueError: If fit() has not been called and self.labels_ is None.
@@ -184,11 +186,11 @@ class DocumentClusterer():
         for cluster_id, doc_ids in tqdm(clusters.items(), desc="Labelling clusters"):
             sample = doc_ids[:self.n_llm_samples] #taking a sample from cluster to reduce time for llm call
             prompt = (
-                'These legal contract titles were grouped together by a '
+                f'These {self.type_of_documents} were grouped together by a '
                 'clustering algorithm:\n\n'
                 + '\n'.join(sample)
                 + '\n\nRespond with only a short 3-5 word label describing '
-                'what type of contracts these are. No explanation.'
+                f'what {self.prompt_type_of_doc} these are. No explanation.'
                 )
 
             response = ollama.chat(
