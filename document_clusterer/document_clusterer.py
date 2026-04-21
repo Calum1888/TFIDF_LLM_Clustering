@@ -193,12 +193,62 @@ class DocumentClusterer():
                 )
 
             response = ollama.chat(
-                model=self.llm_model,
-                messages=[{'role': 'user', 'content': prompt}]
+                model = self.llm_model,
+                messages = [{'role': 'user', 'content': prompt}]
             )
             generated_cluster_labels[cluster_id] = response.message.content.strip()
 
         return generated_cluster_labels
+    
+    def error_detection(self, cluster_id: int, generated_labels: dict) -> dict:
+        '''
+        Uses a locally running Ollama LLM to verify whether a specific cluster
+        is internally coherent.
+
+        Samples up to self.n_llm_samples document titles from the requested cluster
+        and asks the LLM whether they all belong to the same type, using the
+        cluster's generated label as context. Requires fit() and llm_cluster_label()
+        to have been called first.
+
+        Args:
+            cluster_id (int): The ID of the cluster to check.
+            generated_labels (dict): The output of llm_cluster_label(), mapping
+            cluster_id (int) -> label (str).
+
+        Returns:
+            dict: A dictionary with the following keys:
+            - 'cluster_id' (int): The cluster that was checked.
+            - 'label' (str): The generated label for that cluster.
+            - 'verdict' (str): The LLM's YES/NO response and one sentence explanation.
+        '''
+        cluster_label = generated_labels[cluster_id]
+
+        doc_titles = [
+            doc_id for doc_id, label in zip(self.doc_ids_, self.labels_)
+            if int(label) == cluster_id
+        ]
+        sample = doc_titles[:self.n_llm_samples]
+
+        checking_prompt = (
+            f'A clustering algorithm grouped these {self.prompt_type_of_doc} together '
+            f'and labelled the cluster: "{cluster_label}".\n\n'
+            + '\n'.join(sample)
+            + '\n\nDo these titles all belong to the same type? '
+            'Reply with YES or NO, then a one sentence explanation.'
+        )
+
+        response = ollama.chat(
+            model=self.llm_model,
+            messages=[{'role': 'user', 'content': checking_prompt}]
+        )
+
+        return {
+            'cluster_id': cluster_id,
+            'label': cluster_label,
+            'verdict': response.message.content.strip()
+        }
+
+
 
         
         
