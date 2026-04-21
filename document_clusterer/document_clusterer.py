@@ -185,7 +185,7 @@ class DocumentClusterer():
         for cluster_id, doc_ids in tqdm(clusters.items(), desc="Labelling clusters"):
             sample = doc_ids[:self.n_llm_samples] #taking a sample from cluster to reduce time for llm call
             prompt = (
-                f'These {self.type_of_documents} were grouped together by a '
+                f'These {self.prompt_type_of_doc} were grouped together by a '
                 'clustering algorithm:\n\n'
                 + '\n'.join(sample)
                 + '\n\nRespond with only a short 3-5 word label describing '
