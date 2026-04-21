@@ -19,8 +19,7 @@ class DocumentClusterer():
                 random_state: int,
                 llm_model: str,
                 n_llm_samples: int,
-                prompt_type_of_doc: str,
-                ):
+                prompt_type_of_doc: str):
         
         self.ngram_range = ngram
         self.n_components = n_components
