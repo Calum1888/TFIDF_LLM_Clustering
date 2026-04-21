@@ -1,13 +1,13 @@
 # TF-IDF Document Clustering and LLM Analysis
 
-This project blah blah blah
+This project uses a TF-IDF vectoriser and an alogmorative clusterer to cluster legal text. A call is then made to the Ollama LLM to label the cluster based on the text inside it.
 
 # Installation
 
-The dependecnies are listed in requirements.txt. The can be installed with pip install -r requirements.txt
+The dependecnies are listed in ```py requirements.txt```. The can be installed with ```py pip install -r requirements.txt```
 
 # Example Usage
-
+```py
 from document_clusterer import DocumentClusterer
 
 clusterer = DocumentClusterer(
@@ -24,3 +24,4 @@ clusterer = DocumentClusterer(
 
 results = clusterer.fit(documents)
 labels = clusterer.llm_cluster_label()
+```
