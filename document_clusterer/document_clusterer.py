@@ -182,7 +182,7 @@ class DocumentClusterer():
 
         generated_cluster_labels = {}
         for cluster_id, doc_ids in tqdm(clusters.items(), desc="Labelling clusters"):
-            sample = doc_ids[:self.n_llm_samples]
+            sample = doc_ids[:self.n_llm_samples] #taking a sample from cluster to reduce time for llm call
             prompt = (
                 'These legal contract titles were grouped together by a '
                 'clustering algorithm:\n\n'
