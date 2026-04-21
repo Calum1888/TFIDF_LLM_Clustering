@@ -1,0 +1,43 @@
+import json
+from document_clusterer import DocumentClusterer
+
+# settings and constants
+IN_FILE = "data/CUADv1.json"
+
+NGRAM_RANGE = (1,3)
+N_COMPONENTS = 100
+N_ITERATIONS = 5
+DISTANCE_THRESHOLD = 1.5
+LINKAGE = 'ward'
+INPUT_TYPE = 'content'
+RANDOM_STATE = 42
+LLM_MODEL = 'llama3.2:3b'
+N_LLM_SAMPLES = 5
+
+#read in data 
+with open(IN_FILE) as fs:
+    cuad = json.load(fs)
+
+print(cuad.keys())
+
+cuad_data = {
+    doc["title"]: doc["paragraphs"][0]["context"]
+    for doc in cuad["data"]
+}
+
+
+clusterer = DocumentClusterer(
+    ngram=NGRAM_RANGE,
+    n_components=N_COMPONENTS,
+    n_iter=N_ITERATIONS,
+    dist_threshold=1.5,
+    linkage=LINKAGE,
+    input_type=INPUT_TYPE,
+    random_state=RANDOM_STATE,
+    llm_model=LLM_MODEL,
+    n_llm_samples=N_LLM_SAMPLES
+)
+
+results = clusterer.fit(cuad_data)
+labels = clusterer.llm_cluster_label()
+print(labels)
