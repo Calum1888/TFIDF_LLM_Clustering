@@ -20,6 +20,7 @@ def make_clusterer(**overrides):
         random_state=42,
         llm_model="llama3.2:3b",
         n_llm_samples=3,
+        prompt_type_of_doc="legal contract titles",
     )
     defaults.update(overrides)
     return DocumentClusterer(**defaults)
