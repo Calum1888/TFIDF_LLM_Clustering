@@ -14,6 +14,7 @@ INPUT_TYPE = 'content'
 RANDOM_STATE = 42
 LLM_MODEL = 'llama3.2:3b'
 N_LLM_SAMPLES = 5
+PROMPT_TYPE_OF_DOC = 'legal contracts'
 
 # read in data 
 with open(IN_FILE) as fs:
@@ -29,15 +30,19 @@ clusterer = DocumentClusterer(
     ngram=NGRAM_RANGE,
     n_components=N_COMPONENTS,
     n_iter=N_ITERATIONS,
-    dist_threshold=1.5,
+    dist_threshold=DISTANCE_THRESHOLD,
     linkage=LINKAGE,
     input_type=INPUT_TYPE,
     random_state=RANDOM_STATE,
     llm_model=LLM_MODEL,
-    n_llm_samples=N_LLM_SAMPLES
+    n_llm_samples=N_LLM_SAMPLES,
+    prompt_type_of_doc=PROMPT_TYPE_OF_DOC
 )
 
 # cluster and give labels to clusters
 results = clusterer.fit(cuad_data)
 labels = clusterer.llm_cluster_label()
 print(labels)
+
+labels = clusterer.llm_cluster_label()
+clusterer.error_detection(cluster_id=3, generated_labels=labels)
