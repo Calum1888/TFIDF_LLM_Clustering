@@ -7,7 +7,7 @@ IN_FILE = "data/CUADv1.json"
 # clustering parameters
 NGRAM_RANGE = (1,3)
 N_COMPONENTS = 100
-N_ITERATIONS = 5
+N_ITERATIONS = 7
 DISTANCE_THRESHOLD = 1.5
 LINKAGE = 'ward'
 INPUT_TYPE = 'content'
